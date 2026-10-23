@@ -27,11 +27,16 @@ double cost_function(std::vector<double> x, double m, double c, std::vector<doub
     return cst;
 }
 
+//gradient descent
 void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,double& m,double& c,double alpha){
     int n = x.size();
+    // slope or m value
     double slope_differential = 0;
+    // intercept or c value
     double intercept_differential = 0;
+    // running the loop through once for the enitre dataset - batch gradient descent
     for(int i =0;i<n;i++){
+            // gradient descent working
             double linear = (m * x[i] + c);
             slope_differential +=  (linear- y[i]) * x[i];
             intercept_differential += (linear - y[i]);
@@ -39,6 +44,7 @@ void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,
     }
     slope_differential /= n;
     intercept_differential /=n;
+    //updating weights and bias you can say that
     m = m - alpha * (slope_differential);
     c = c - alpha * (intercept_differential);
 }
