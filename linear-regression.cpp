@@ -34,6 +34,8 @@ void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,
     double slope_differential = 0;
     // intercept or c value
     double intercept_differential = 0;
+
+    /* Batch - Gradient Descent : This first calculates the entire dataset and then updates the slope and intercept
     // running the loop through once for the enitre dataset - batch gradient descent
     for(int i =0;i<n;i++){
             // gradient descent working
@@ -44,9 +46,23 @@ void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,
     }
     slope_differential /= n;
     intercept_differential /=n;
-    //updating weights and bias you can say that
+    //updating parameters outside the loop after the entire training dataset - batch gradient descent
     m = m - alpha * (slope_differential);
     c = c - alpha * (intercept_differential);
+    */
+
+    /* Stochastic Gradient Descent : different from batch gradient descent it calculates for single training example and updates the slope and intercept values
+    requires less memory suitable for mid to high datasets */
+    for (int j = 0; j<n;j++){
+        double linear = (m * x[j] +c);
+        slope_differential += (linear - y[j]) * x[j];
+        intercept_differential += (linear - y[j]);
+        slope_differential /= n;
+        intercept_differential /=n;
+        //Updating the parameters inside the loop for each training example - stochastic gradient descent
+        m = m - alpha * (slope_differential );
+        c = c - alpha * (intercept_differential);
+    }
 }
 
 int main()
@@ -66,7 +82,7 @@ int main()
     std::cin >> epochs;
     std::cout << "Enter alpha" <<endl;
     std::cin>> alpha;
-    for (int i =0; i <= epochs; i++){
+    for (int i =0; i < epochs; i++){
         gradient_descent(x,y,m,c,alpha);
         if (i % 500 == 0){
                 std::cout<<"Iteration "<< i <<" Cost "<< cost_function(x,m,c,y) <<" m is "<< m <<" c is "<< c <<endl; ;
