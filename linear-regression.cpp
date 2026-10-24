@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <algorithm>
+
+
 // trying linear regression from scratch
 
 using namespace std;
@@ -28,7 +31,7 @@ double cost_function(std::vector<double> x, double m, double c, std::vector<doub
 }
 
 //gradient descent
-void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,double& m,double& c,double alpha){
+void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,double& m,double& c,double alpha,int batch_size){
     int n = x.size();
     // slope or m value
     double slope_differential = 0;
@@ -52,7 +55,7 @@ void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,
     */
 
     /* Stochastic Gradient Descent : different from batch gradient descent it calculates for single training example and updates the slope and intercept values
-    requires less memory suitable for mid to high datasets */
+    requires less memory suitable for mid to high datasets
     for (int j = 0; j<n;j++){
         double linear = (m * x[j] +c);
         slope_differential += (linear - y[j]) * x[j];
@@ -63,6 +66,29 @@ void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,
         m = m - alpha * (slope_differential );
         c = c - alpha * (intercept_differential);
     }
+    */
+    /* mini batch gradient descent */
+    for (int start_idx = 0; start_idx < n; start_idx += batch_size){
+        double slope_differential = 0;
+        double intercept_differential = 0;
+
+        int end_idx = std::min(start_idx + batch_size,n);
+
+        for (int k = start_idx; k < end_idx;k++){
+            double linear_minibatch = (m * x[k] + c);
+            slope_differential += (linear_minibatch - y[k]) * x[k];
+            intercept_differential += (linear_minibatch - y[k]);
+        }
+        int current_batch_size = end_idx - start_idx;
+
+        slope_differential /= current_batch_size;
+        intercept_differential /= current_batch_size;
+
+        m = m - alpha * (slope_differential);
+        c = c - alpha * (intercept_differential);
+    }
+
+
 }
 
 int main()
@@ -71,8 +97,9 @@ int main()
     std::vector<double> x = {1,2,3,4,5};
     // Output trainign variables y
     std::vector<double> y = {6,7,8,9,10};
-    // slope and intercept
-    double m,c,epochs,alpha;
+    // slope, intercept , learning rate
+    double m,c,alpha;
+    int epochs, batch_size;
     std::cout << "Enter slope or m : "<<endl;
     std::cin >>m;
     std::cout << "Enter intercept or c : "<<endl;
@@ -81,9 +108,11 @@ int main()
     std::cout << "Select epochs "<<endl;
     std::cin >> epochs;
     std::cout << "Enter alpha" <<endl;
-    std::cin>> alpha;
+    std::cin >> alpha;
+    std::cout << "Enter batch size "<<endl;
+    std::cin >>batch_size;
     for (int i =0; i < epochs; i++){
-        gradient_descent(x,y,m,c,alpha);
+        gradient_descent(x,y,m,c,alpha,batch_size);
         if (i % 500 == 0){
                 std::cout<<"Iteration "<< i <<" Cost "<< cost_function(x,m,c,y) <<" m is "<< m <<" c is "<< c <<endl; ;
         }
