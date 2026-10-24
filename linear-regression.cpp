@@ -68,22 +68,24 @@ void gradient_descent(const std::vector<double>& x,const std::vector<double>& y,
     }
     */
     /* mini batch gradient descent */
+    //outer loop is for each batch
     for (int start_idx = 0; start_idx < n; start_idx += batch_size){
         double slope_differential = 0;
         double intercept_differential = 0;
-
+        // to define end of a batch using batch size and starting index
         int end_idx = std::min(start_idx + batch_size,n);
-
+        // inner loop is for the real work
         for (int k = start_idx; k < end_idx;k++){
             double linear_minibatch = (m * x[k] + c);
             slope_differential += (linear_minibatch - y[k]) * x[k];
             intercept_differential += (linear_minibatch - y[k]);
         }
+        // for dividing
         int current_batch_size = end_idx - start_idx;
 
         slope_differential /= current_batch_size;
         intercept_differential /= current_batch_size;
-
+        // update rule is outside the loop cause this is mini "batch" gradient descent
         m = m - alpha * (slope_differential);
         c = c - alpha * (intercept_differential);
     }
