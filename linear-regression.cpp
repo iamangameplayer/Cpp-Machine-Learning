@@ -5,7 +5,6 @@
 #include <cctype>
 
 // trying linear regression from scratch
-
 using namespace std;
 
 // both linear function y = mx+c and cost function everything is in one function named cost_function
@@ -30,6 +29,7 @@ double cost_function(std::vector<double> x, double m, double c, std::vector<doub
     return cst;
 }
 
+
 //gradient descent
 void batch_gradient_descent(const std::vector<double>& x,const std::vector<double>& y,double& m,double& c,double alpha,int n){
     // slope or m value
@@ -51,8 +51,10 @@ void batch_gradient_descent(const std::vector<double>& x,const std::vector<doubl
     //updating parameters outside the loop after the entire training dataset - batch gradient descent
     m = m - alpha * (slope_differential);
     c = c - alpha * (intercept_differential);
-
 }
+
+
+
 void stochastic_gradient_descent(const std::vector<double>& x, const std::vector<double>& y, double& m,double& c,double alpha,int n){
     //Stochastic Gradient Descent : different from batch gradient descent it calculates for single training example and updates the slope and intercept values
     //requires less memory suitable for mid to high
@@ -69,6 +71,7 @@ void stochastic_gradient_descent(const std::vector<double>& x, const std::vector
         c = c - alpha * (intercept_differential);
     }
 }
+
 
 void mini_batch_gradient_descent(const std::vector<double>& x,const std::vector<double>& y, double& m,double& c, double alpha,int batch_size,int n){
     /* mini batch gradient descent */
@@ -93,20 +96,12 @@ void mini_batch_gradient_descent(const std::vector<double>& x,const std::vector<
         m = m - alpha * (slope_differential);
         c = c - alpha * (intercept_differential);
     }
-
-
 }
 
-void selection(const std::vector<double>& x,
-               const std::vector<double>& y,
-               double& m,
-               double& c,
-               double alpha,
-               int epochs,
-               int n,
-               char choice,
-               int batch_size
-               ){
+
+
+void selection(const std::vector<double>& x,const std::vector<double>& y,double& m,double& c,double alpha,int epochs,int n,
+               char choice,int batch_size){
 for (int j = 0; j < epochs; j++){
     switch(choice){
     case 'A':
@@ -122,12 +117,11 @@ for (int j = 0; j < epochs; j++){
                 }
     if (j % 500 == 0){
         std::cout<<"Iteration "<< j <<" Cost "<< cost_function(x,m,c,y) <<" m is "<< m <<" c is "<< c <<endl; ;
+        }
     }
-    }
-
-
-
 }
+
+
 
 int main()
 {
